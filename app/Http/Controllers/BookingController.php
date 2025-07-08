@@ -64,7 +64,6 @@ class BookingController extends Controller
         ]);
 
 
-
         // Pesan notifikasi sesuai status
         switch ($status) {
             case 'approved':
@@ -83,6 +82,15 @@ class BookingController extends Controller
                 $title = ucfirst($status);
                 $message = "Your Booking: $status";
                 break;
+        }
+
+        $start = Carbon::createFromFormat('H:i', $request->start_time);
+        $end = Carbon::createFromFormat('H:i', $request->end_time);
+        $startLimit = Carbon::createFromTime(8, 0);  // 08:00
+        $endLimit = Carbon::createFromTime(17, 0);   // 17:00
+
+        if ($start->lt($startLimit) || $end->gt($endLimit)) {
+            return redirect()->back()->with('error', 'Room usage is limited to 08:00 - 17:00.');
         }
 
         // Kirim notifikasi ke user yang login
@@ -107,7 +115,7 @@ class BookingController extends Controller
                         ->orWhere('booking_date', 'like', "%{$search}%");
                 });
             })
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'desc');
 
         $bookings = $query->paginate(5)->appends(['search' => $search]);
 
@@ -143,7 +151,7 @@ class BookingController extends Controller
             });
         }
 
-        $bookings = $query->orderBy('created_at', 'asc')->paginate(5);
+        $bookings = $query->orderBy('created_at', 'desc')->paginate(5);
         $rooms = Room::all();
 
         return view('rooms.status', compact('bookings', 'rooms'));
