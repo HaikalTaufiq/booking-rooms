@@ -139,11 +139,13 @@
         <select name="room" required>
             <option value="">-- Choose Room --</option>
             @foreach($rooms as $room)
-            <option value="{{ $room->name }}">
+            <option value="{{ $room->name }}"
+                {{ (isset($latestBooking) && $latestBooking->room_name === $room->name) ? 'selected' : '' }}>
                 {{ $room->name }} || {{ $room->location }}
             </option>
             @endforeach
         </select>
+
 
         <label>Damage Type</label>
         <input type="text" name="damage_type" placeholder="Example: AC not working" required>
