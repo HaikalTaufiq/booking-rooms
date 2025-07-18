@@ -106,12 +106,18 @@
         const start = parseInt(startTime.replace(':', ''), 10);
         const end = parseInt(endTime.replace(':', ''), 10);
 
-        // 08:00 = 800, 17:00 = 1700
         if (start < 800 || end > 1700) {
-            e.preventDefault(); // Stop form submit
+            e.preventDefault();
             alert("Room usage time is limited to 08:00 - 17:00 only.");
+            return;
+        }
+
+        if (end <= start) {
+            e.preventDefault();
+            alert("End time must be later than start time.");
         }
     });
 </script>
+
 
 @endsection

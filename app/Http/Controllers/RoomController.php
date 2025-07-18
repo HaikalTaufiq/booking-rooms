@@ -21,6 +21,7 @@ class RoomController extends Controller
                 ->orWhere('capacity', 'like', "%$search%");
         }
 
+        $query->orderBy('created_at', 'desc');
 
         $rooms = $query->paginate(5);
 
